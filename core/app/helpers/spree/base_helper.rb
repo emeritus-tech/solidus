@@ -130,6 +130,16 @@ module Spree
     end
 
     def display_price(product_or_variant)
+      if params[:currency]
+        opts = Spree::Variant::PricingOptions.new(currency: params[:currency].upcase)
+      else
+        opts = current_pricing_options
+      end
+
+      price = product_or_variant.price_for(opts)
+
+      return price.to_html unless price.blank?
+
       product_or_variant.price_for(current_pricing_options).to_html
     end
 
